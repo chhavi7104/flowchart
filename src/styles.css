@@ -1,57 +1,69 @@
+/* ================= GLOBAL ================= */
 body {
   margin: 0;
   font-family: Inter, sans-serif;
-  /* infinite grid background on the page so panning feels infinite */
   background: radial-gradient(#e5e7eb 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
-.canvas {
-  width: 100vw;
+.app-container {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  padding: 120px; /* keep room around origin for building workflows */
+  width: 100vw;
+  overflow: hidden;
   position: relative;
-  overflow: visible; /* allow translated nodes to be visible outside initial bounds */
 }
 
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ================= CANVAS ================= */
+.canvas {
+  flex: 1;
+  position: relative;
+  overflow: visible;
+  padding: 120px;
+}
+
+/* ================= NODES ================= */
 .node-wrapper {
   text-align: center;
   margin-top: 30px;
 }
 
 .node {
-  display: inline-flex;           /* lets size adjust to content */
+  display: inline-flex;
   flex-direction: column;
-  align-items: center;            /* center content horizontally */
-  justify-content: center;        /* center content vertically */
-  
-  padding: 8px;                   /* space inside the box for text */
-  background: gray;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
   border-radius: 18px;
   color: white;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-
-  /* square resizing based on content */
-  aspect-ratio: 1 / 1;            /* keeps width = height */
-  min-width: 40px;                /* minimum size for small text */
-  min-height: 40px;               /* same as min-width */
-  
-  /* optional maximum size to prevent huge squares */
-  max-width: 200px;
-  max-height: 200px;
-
-  text-align: center;             /* ensures text wraps nicely */
-  word-break: break-word;         /* prevents overflow */
-}
-
-/* make nodes render above connectors */
-.node {
+  aspect-ratio: 1 / 1;
+  min-width: 50px;
+  min-height: 50px;
+  max-width: 220px;
+  max-height: 220px;
+  text-align: center;
+  word-break: break-word;
   position: relative;
   z-index: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
+.node:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.05);
+}
 
 .node input {
   background: transparent;
@@ -63,129 +75,108 @@ body {
   width: 100%;
 }
 
-.node.start {
-  background: linear-gradient(135deg, #34d399, #10b981);
-  
+/* Node Types */
+.node.start { background: linear-gradient(135deg, #34d399, #10b981); }
+.node.action { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+.node.branch { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.node.end { background: linear-gradient(135deg, #f87171, #b91c1c); }
+
+/* Node label */
+.node-label { font-size: 15px; font-weight: 600; outline: none; white-space: nowrap; }
+
+/* Node icon */
+.node-icon { display: block; font-size: 18px; margin-bottom: 4px; opacity: 0.9; }
+
+/* Node notes */
+.node-notes {
+  margin-top: 6px;
+  width: 180px;
+  height: 80px;
+  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.node.action {
-  background: linear-gradient(135deg, #60a5fa, #2563eb);
-}
-
-.node.branch {
-  background: linear-gradient(135deg, #a78bfa, #7c3aed);
-}
-
-.node.end {
-  background: linear-gradient(135deg, #9ca3af, #6b7280);
-}
-
+/* ================= NODE BUTTONS ================= */
 .buttons {
-  margin-top: 3px;
+  margin-top: 6px;
   display: flex;
   justify-content: center;
   gap: 6px;
 }
 
-button {
+.buttons button {
   border: none;
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
-}
-
-.delete {
-  background: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.15); /* subtle transparent background */
   color: white;
 }
 
-.connector-svg {
-  margin: 10px auto;
+.buttons button:hover {
+  transform: translateY(-2px) scale(1.1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.3); /* highlight effect */
+  filter: brightness(1.1);
 }
 
+/* Delete button specific */
+.buttons button.delete {
+  background: rgba(239,68,68,0.85);
+  color: white;
+}
+.buttons button.delete:hover {
+  background: rgba(239,68,68,1);
+}
+
+/* Notes toggle button */
+.notes-toggle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(251,191,36,0.85);
+  transition: transform 0.2s, filter 0.2s, background 0.2s;
+}
+.notes-toggle.active {
+  background: rgba(251,159,24,1);
+}
+.notes-toggle:hover {
+  transform: scale(1.1);
+  filter: brightness(1.15);
+}
 .branch-container {
   display: flex;
-  justify-content: center;
-  gap: 80px;
+  justify-content: center; /* centers True/False side by side */
+  gap: 80px; /* spacing between branches */
   margin-top: 20px;
 }
 
-.branch-label {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 8px;
-}
-
-.add-branch {
-  background: white;
-  border-radius: 10px;
-  padding: 6px 12px;
-  border: 1px dashed #aaa;
-}
-
-.save {
-  margin-top: 50px;
-  padding: 10px 18px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-}
-
-/* Controls (Undo/Redo area) */
-.controls {
-  margin-top: 20px;
+.branch-child {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-.controls button {
-  border-radius: 8px;
-  width: auto;
-  height: auto;
-  padding: 8px 12px;
-  background: white;
-  color: #111827;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-}
-.controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  flex-direction: column;
+  align-items: center;
 }
 
-.node-label {
-  font-size: 15px;
-  font-weight: 600;
-  outline: none;
-  white-space: nowrap;
-}
-.node-icon {
-  display: block;
-  font-size: 18px;
-  margin-bottom: 2px;
-  opacity: 0.9;
-}
-:root {
-  --line: #b0b0b0;
-}
 
-.node {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.node:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
-}
-
-.connector-svg path {
-  transition: stroke 0.2s ease;
-}
-
-.node-wrapper:hover .connector-svg path {
-  stroke: #6366f1;
-}
+/* ================= CONTEXT MENU ================= */
 .context-menu {
   position: fixed;
   background: white;
@@ -201,3 +192,140 @@ button {
   padding: 6px 12px;
   text-align: left;
 }
+
+/* ================= FLOATING ELEMENTS ================= */
+.floating-name {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+  font-weight: bold;
+  pointer-events: none;
+  background: linear-gradient(135deg, #2563eb, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ================= RIGHT PANEL ================= */
+.right-panel-floating {
+  position: fixed;
+  top: 60px;
+  right: -320px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  transition: right 0.3s ease;
+}
+
+.right-panel-floating.open { right: 10px; }
+.right-panel-floating h3 { margin: 0 0 10px 0; font-size: 16px; font-weight: 600; }
+
+/* ================= RIGHT PANEL TOGGLE BUTTON ================= */
+.right-panel-toggle {
+ position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ================= PANEL FIELDS ================= */
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.field input { padding: 6px 8px; border-radius: 6px; border: 1px solid #d1d5db; }
+
+/* ================= PANEL BUTTONS ================= */
+.panel-actions { display: flex; gap: 10px; margin-top: 12px; }
+.panel-actions button {
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.panel-actions button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+.export {
+  margin-top: 10px;
+  padding: 10px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* ================= ABOUT & WARNINGS ================= */
+.about {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #111827;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.about h4 { margin-top: 0; margin-bottom: 8px; font-size: 16px; color: #2563eb; }
+.about h5 { margin-top: 16px; margin-bottom: 8px; font-size: 14px; color: #374151; }
+.about ol, .about ul { margin-left: 20px; margin-bottom: 8px; }
+.about li { margin-bottom: 6px; }
+.about ul li { list-style-type: disc; }
+.about a { color: #2563eb; text-decoration: none; }
+
+.panel-warnings { font-size: 12px; color: #b45309; margin-top: 8px; }
+
+/* ================= SCROLL BUTTONS ================= */
+.scroll-buttons {
+  position: sticky;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.scroll-buttons button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.scroll-buttons button:hover { background: #1d4ed8; }

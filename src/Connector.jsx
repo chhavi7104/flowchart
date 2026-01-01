@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-export default function Connector({ fromId, toId, canvasRef }) {
+export default function Connector({ fromId, toId, canvasRef, branchIndex }) {
   const [coords, setCoords] = useState(null);
   const [ctrl, setCtrl] = useState({ x: 0, y: 0 });
   const dragging = useRef(false);
@@ -31,16 +31,18 @@ export default function Connector({ fromId, toId, canvasRef }) {
       const r1 = fromEl.getBoundingClientRect();
       const r2 = toEl.getBoundingClientRect();
 
-      const start = {
-        x: (r1.left - canvasRect.left - offsetX) / scale + r1.width / 2,
-        y: (r1.bottom - canvasRect.top - offsetY) / scale
-      };
-      const end = {
-        x: (r2.left - canvasRect.left - offsetX) / scale + r2.width / 2,
-        y: (r2.top - canvasRect.top - offsetY) / scale - 10
-      };
+      let startX = (r1.left - canvasRect.left - offsetX) / scale + r1.width / 2;
+      const startY = (r1.bottom - canvasRect.top - offsetY) / scale;
 
-      setCoords({ start, end });
+      if (branchIndex !== undefined) {
+        const offset = r1.width / 4;
+        startX += branchIndex === 0 ? -offset : offset;
+      }
+
+      const endX = (r2.left - canvasRect.left - offsetX) / scale + r2.width / 2;
+      const endY = (r2.top - canvasRect.top - offsetY) / scale - 10;
+
+      setCoords({ start: { x: startX, y: startY }, end: { x: endX, y: endY } });
     }
 
     update();
@@ -54,7 +56,7 @@ export default function Connector({ fromId, toId, canvasRef }) {
       window.removeEventListener("scroll", update);
       obs.disconnect();
     };
-  }, [fromId, toId, canvasRef]);
+  }, [fromId, toId, canvasRef, branchIndex]);
 
   useEffect(() => {
     function move(e) {
@@ -93,11 +95,22 @@ export default function Connector({ fromId, toId, canvasRef }) {
   return (
     <svg style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
       <defs>
+        <linearGradient id={`grad-${fromId}-${toId}`} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#6366f1" />
+          <stop offset="100%" stopColor="#2563eb" />
+        </linearGradient>
         <marker id={`arrow-${fromId}-${toId}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)" />
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb" />
         </marker>
       </defs>
-      <path d={d} stroke="var(--line)" strokeWidth="3" strokeLinecap="round" fill="none" markerEnd={`url(#arrow-${fromId}-${toId})`} />
+      <path
+        d={d}
+        stroke={`url(#grad-${fromId}-${toId})`}
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        markerEnd={`url(#arrow-${fromId}-${toId})`}
+      />
       <circle
         cx={qx}
         cy={qy}
