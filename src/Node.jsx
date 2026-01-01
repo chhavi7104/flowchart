@@ -10,7 +10,8 @@ export default function Node({
   setMenu,
   canvasRef,
   selectedNodeId,
-  setSelectedNodeId
+  setSelectedNodeId,
+  updateNotes, 
 }) {
   const [showNotes, setShowNotes] = useState(false);
   const node = nodes[nodeId];
@@ -93,13 +94,14 @@ export default function Node({
 
         {/* Notes Section */}
         {showNotes && (
-          <textarea
-            className="node-notes"
-            placeholder="Add notes..."
-            value={node.notes || ""}
-            onChange={(e) => updateLabel(node.id, e.target.value, "notes")}
-          />
-        )}
+  <textarea
+    className="node-notes"
+    placeholder="Add notes..."
+    value={node.notes || ""}
+    onChange={(e) => updateNotes(node.id, e.target.value)}
+  />
+)}
+
       </div>
 
       {/* Connectors to Children */}
@@ -122,6 +124,7 @@ export default function Node({
               addNode={addNode}
               deleteNode={deleteNode}
               updateLabel={updateLabel}
+              updateNotes={updateNotes}  
               setMenu={setMenu}
               canvasRef={canvasRef}
               selectedNodeId={selectedNodeId}
@@ -150,6 +153,7 @@ export default function Node({
           addNode={addNode}
           deleteNode={deleteNode}
           updateLabel={updateLabel}
+          updateNotes={updateNotes}
           setMenu={setMenu}
           canvasRef={canvasRef}
           selectedNodeId={selectedNodeId}

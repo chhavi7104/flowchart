@@ -82,15 +82,15 @@ export default function App() {
   }, [history.present, setWorkflow]);
 
   const updateNotes = useCallback((id, notes) => {
-    const prev = history.present;
-    setWorkflow({
-      ...prev,
-      nodes: {
-        ...prev.nodes,
-        [id]: { ...prev.nodes[id], notes }
-      }
-    });
-  }, [history.present, setWorkflow]);
+  const prev = history.present;
+  setWorkflow({
+    ...prev,
+    nodes: {
+      ...prev.nodes,
+      [id]: { ...prev.nodes[id], notes }
+    }
+  });
+}, [history.present, setWorkflow]);
 
   const deleteNode = useCallback((id) => {
     if (!id || id === history.present.rootId) return;
