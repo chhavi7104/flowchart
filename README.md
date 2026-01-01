@@ -73,35 +73,25 @@ This assignment focuses on how complex UI state can be modeled and managed in a 
 The workflow is stored as a **tree-like JavaScript object**.  
 Each node contains its own metadata and references to its children.
 
-### Example Node Structure
 
-```js
-{
-  id: "unique-id",
-  type: "action",
-  label: "Send Email",
-  children: [],
-  position: { x: 0, y: 0 }
-}
 ### Component Structure
 ```bash
-src/
- ├── App.jsx        // Manages workflow state and canvas behavior
- ├── Node.jsx       // Renders individual nodes and handles interactions
- ├── Connector.jsx // Draws SVG connections between nodes
- ├── styles.css    // Styling and visual effects
- └── main.jsx      // Application entry point
+  src/
+    ├── App.jsx        // Manages workflow state and canvas behavior
+    ├── Node.jsx       // Renders individual nodes and handles interactions
+    ├── Connector.jsx // Draws SVG connections between nodes
+    ├── styles.css    // Styling and visual effects
+    └── main.jsx      // Application entry point
+```
+
 ### Component Responsibilities
-###App.jsx
 
+ ###App.jsx
 - Handles the overall workflow state
-
 - Manages zoom, pan, and undo/redo logic
 
-### Node.jsx
-
+ ### Node.jsx
 - Recursive component that renders a node and its children
-
 - Handles drag, edit, delete, and context menu actions
 
 ### Connector.jsx
@@ -119,12 +109,12 @@ src/
 - The UI design is intentionally minimal and focused on clarity rather than heavy animations
 
 
-##Running the Project Locally
+## Running the Project Locally
 ```bash
 npm install
 npm run dev
-
-####Final Notes
+```
+#### Final Notes
 
 This project was a good exercise in building a non-trivial interactive UI using only core frontend tools.
 It demonstrates how recursive rendering, structured state management, and user interactions can be handled effectively in React without relying on external libraries.
