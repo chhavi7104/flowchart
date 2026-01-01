@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Node from "./Node";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export default function App() {
   const canvasRef = useRef(null);
@@ -203,7 +205,21 @@ export default function App() {
     });
     return warnings;
   }
+  /* ================= EXPORT PDF ================= */
+  function exportPDF() {
+  if (!canvasRef.current) return;
 
+  html2canvas(canvasRef.current, { scale: 2 }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
+    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+    pdf.save(`${workflowName || "workflow"}.pdf`);
+  });
+}
   /* ================= RENDER ================= */
   return (
     <div className="app-container">
@@ -272,16 +288,7 @@ export default function App() {
         {/* Export Button */}
         <button
           className="export"
-          style={{ marginTop: "10px" }}
-          onClick={() => {
-            const data =
-              "data:text/json;charset=utf-8," +
-              encodeURIComponent(JSON.stringify({ name: workflowName, workflow: history.present }, null, 2));
-            const a = document.createElement("a");
-            a.href = data;
-            a.download = `${workflowName || "workflow"}.json`;
-            a.click();
-          }}
+  onClick={exportPDF}
         >
           Export Workflow
         </button>
