@@ -1,0 +1,203 @@
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  /* infinite grid background on the page so panning feels infinite */
+  background: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.canvas {
+  width: 100vw;
+  height: 100vh;
+  padding: 120px; /* keep room around origin for building workflows */
+  position: relative;
+  overflow: visible; /* allow translated nodes to be visible outside initial bounds */
+}
+
+.node-wrapper {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.node {
+  display: inline-flex;           /* lets size adjust to content */
+  flex-direction: column;
+  align-items: center;            /* center content horizontally */
+  justify-content: center;        /* center content vertically */
+  
+  padding: 8px;                   /* space inside the box for text */
+  background: gray;
+  border-radius: 18px;
+  color: white;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  font-size: 12px;
+  font-weight: 600;
+
+  /* square resizing based on content */
+  aspect-ratio: 1 / 1;            /* keeps width = height */
+  min-width: 40px;                /* minimum size for small text */
+  min-height: 40px;               /* same as min-width */
+  
+  /* optional maximum size to prevent huge squares */
+  max-width: 200px;
+  max-height: 200px;
+
+  text-align: center;             /* ensures text wraps nicely */
+  word-break: break-word;         /* prevents overflow */
+}
+
+/* make nodes render above connectors */
+.node {
+  position: relative;
+  z-index: 1;
+}
+
+
+.node input {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+.node.start {
+  background: linear-gradient(135deg, #34d399, #10b981);
+  
+}
+
+.node.action {
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+}
+
+.node.branch {
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+}
+
+.node.end {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+.buttons {
+  margin-top: 3px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+button {
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.delete {
+  background: #ef4444;
+  color: white;
+}
+
+.connector-svg {
+  margin: 10px auto;
+}
+
+.branch-container {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  margin-top: 20px;
+}
+
+.branch-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.add-branch {
+  background: white;
+  border-radius: 10px;
+  padding: 6px 12px;
+  border: 1px dashed #aaa;
+}
+
+.save {
+  margin-top: 50px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Controls (Undo/Redo area) */
+.controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.controls button {
+  border-radius: 8px;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  background: white;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+.controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.node-label {
+  font-size: 15px;
+  font-weight: 600;
+  outline: none;
+  white-space: nowrap;
+}
+.node-icon {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 2px;
+  opacity: 0.9;
+}
+:root {
+  --line: #b0b0b0;
+}
+
+.node {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+}
+
+.connector-svg path {
+  transition: stroke 0.2s ease;
+}
+
+.node-wrapper:hover .connector-svg path {
+  stroke: #6366f1;
+}
+.context-menu {
+  position: fixed;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  padding: 8px;
+}
+.context-menu button {
+  display: block;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 6px 12px;
+  text-align: left;
+}
