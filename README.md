@@ -12,11 +12,10 @@ This assignment focuses on how complex UI state can be modeled and managed in a 
 
 - **Live Demo:**
 - Vercel CLI 50.1.3
--🔍  Inspect: *(https://vercel.com/chhavis-projects-77b45af6/workflow-builder-ui-emitrr/Dr1Vim19qaCgrPnuapR2t7CCHFCP)*
+- 🔍  Inspect: *(https://vercel.com/chhavis-projects-77b45af6/workflow-builder-ui-emitrr/Dr1Vim19qaCgrPnuapR2t7CCHFCP)*
+- ✅  Production: *(https://workflow-builder-ui-emitrr-dr91hp5dg-chhavis-projects-77b45af6.vercel.app)*
+- 🔗  Aliased: *(https://workflow-builder-ui-emitrr.vercel.app)* 
 
--✅  Production: *(https://workflow-builder-ui-emitrr-dr91hp5dg-chhavis-projects-77b45af6.vercel.app)*
-
--🔗  Aliased: *(https://workflow-builder-ui-emitrr.vercel.app)* 
 - **Source Code:** *((https://github.com/chhavi7104/workflow_builder_UI-emitrr))*
 
 ---
